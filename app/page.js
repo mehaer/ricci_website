@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react"; // Import useRef
 import { Container, TextField, Button, Paper, Typography, Box } from "@mui/material";
 
-const symbols = ["+", "÷", "%", "-", "∫", "𝚫", ":)", "∑", "π", "√", "∞", "∈", "≠"]; // Add more symbols as needed
+const symbols = ["+", "÷", "%", "-", "𝚫", "∑", "π", "√", "∞", "∈", "≠"]; // Add more symbols as needed
 
 const getRandomSymbol = () => {
   return symbols[Math.floor(Math.random() * symbols.length)];

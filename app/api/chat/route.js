@@ -3,23 +3,28 @@ import OpenAI from "openai";
 
 export async function POST(req) {
   const openai = new OpenAI({
-    baseURL: "https://openrouter.ai/api/v1",
+    baseURL: "https://api.openai.com/v1",
     apiKey: process.env.OPENAI_API_KEY,
   });
 
   const data = await req.json();
 
-  const completion = await openai.chat.completions.create({
-    messages: [...data],  // Assuming `data` contains the necessary input messages
-    model: 'meta-llama/llama-3.1-8b-instruct:free', // Ensure model exists and is accessible
+  // Create the OpenAI completion request
+  const response = await openai.chat.completions.create({
+    model: 'ft:gpt-4o-2024-08-06:personal::AHGufXhY',
+    messages: [
+      { role: "system", content: "You are a helpful assistant who understands the Ricci package and can respond with Mathematica." },
+      { role: "user", content: data.content }  // Use user's input
+    ],
     stream: true,
   });
 
+  // Set up the ReadableStream for streaming response data
   const stream = new ReadableStream({
     async start(controller) {
       const encoder = new TextEncoder();
       try {
-        for await (const chunk of completion) {
+        for await (const chunk of response) {
           const content = chunk.choices[0]?.delta?.content;
           if (content) {
             const text = encoder.encode(content);
@@ -34,6 +39,7 @@ export async function POST(req) {
     },
   });
 
+  // Return the response as a stream
   return new NextResponse(stream, {
     headers: { 'Content-Type': 'text/event-stream' }
   });
