@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
-
+const systemPrompt = `you are a chatbot well who’s well trained on the Ricci package`;
 export async function POST(req) {
   const openai = new OpenAI({
     baseURL: "https://api.openai.com/v1",
@@ -11,12 +11,9 @@ export async function POST(req) {
 
   // Create the OpenAI completion request
   const response = await openai.chat.completions.create({
-    model: 'ft:gpt-4o-2024-08-06:personal::AHGufXhY',
-    messages: [
-      { role: "system", content: "You are a helpful assistant who understands the Ricci package and can respond with Mathematica." },
-      { role: "user", content: data.content }  // Use user's input
-    ],
-    stream: true,
+    messages:[{role: 'system', content: systemPrompt}, ...data],
+        model: 'ft:gpt-4o-2024-08-06:personal::AHGufXhY',
+        stream: true,
   });
 
   // Set up the ReadableStream for streaming response data
